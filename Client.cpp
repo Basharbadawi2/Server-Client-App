@@ -1,3 +1,4 @@
+
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netinet/in.h>
@@ -210,14 +211,32 @@ int main()
                 cin >> Password;
                 send(clientSocket , reinterpret_cast<int*>(&Password) , sizeof(Password) , 0 );
                 // ----------------
-                buffer[1024] = {0} ;
-                recv(clientSocket ,buffer ,sizeof(buffer) , 0) ;
-                cout << "Message from server : " << buffer << endl ;
+
+                // Receive counters
+
+                int counter2 ,counter ;
+                recv(clientSocket ,&counter2 ,sizeof(counter2) ,0);
+                send(clientSocket , "Counter2 received ! " ,strlen("Counter2 received ! "), 0 );
+                recv(clientSocket ,&counter ,sizeof(counter) , 0);
+                send(clientSocket , "Counter received ! " ,strlen("Counter received ! ") , 0);
+
+                if (counter2 == counter)
+                {
+                    char Respond[1004] = {0};
+                    recv(clientSocket ,Respond ,sizeof(Respond) ,0);
+                    cout << "Server : " << Respond << endl ;
+                    cout << "Please enter your choice ( 1 ,2 ,3) " ;
+                    char Choice ;
+                    cin >> Choice ;
+                    send(clientSocket , reinterpret_cast<char*>(&Choice) ,sizeof(Choice) ,0);
+
+                }
+
             }
             else{
                 char Respond[1024] ={0};
                 recv(clientSocket , Respond ,sizeof(Respond) , 0 );
-                cout << "Message from serevr : " << Respond << endl ;
+                cout << "Serevr : " << Respond << endl ;
             }
         }
         else
