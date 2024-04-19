@@ -154,38 +154,57 @@ int main()
             if (anss == 'y')
             {
                 recv(clientSocket, &bufferr, sizeof(bufferr), 0 ) ;
+                cout << USERS << "St user name is correct ! " << endl;
                 // Validation
+//
+//                for (int i=0; i<sizeof(bufferr); i++)
+//                {
+//                    for (int j=0; j<sizeof(buffer); j++)
+//                    {
+//                        if (bufferr[i] == buffer[j])
+//                        {
+//                            counter++;
+//                        }
+//                    }
+//                }
 
-                for (int i=0; i<sizeof(bufferr); i++)
-                {
-                    for (int j=0; j<sizeof(buffer); j++)
-                    {
-                        if (bufferr[i] == buffer[j])
-                        {
-                            counter++;
-                        }
-                    }
-                }
                 // Convert integers to strings
                 recv(clientSocket, &Password, sizeof(Password), 0 );
+                cout << USERS << "St password is correct ! " << endl ;
 
                 string passStr = to_string(password);
                 string PassStr = to_string(Password);
                 for (int i=0; i<passStr.size(); i++)
                 {
+                    counter++;
                     for(int j=0; j<PassStr.size(); j++)
                     {
-                        if(passStr[i]==PassStr[j])
+                        if(i==j)
                         {
-                            counter2++;
+                            if(passStr[i] == PassStr[j])
+                            {
+                                counter2++;
+                            }
                         }
                     }
                 }
-                cout << counter2 << endl ;
-                cout << counter << endl ;
-                if(counter2 == sizeof(password))
+                // Sending counters
+                send(clientSocket , reinterpret_cast<int*>(&counter2), sizeof(counter2) , 0 );
+                char bufferr[1024] = {0};
+
+                recv(clientSocket ,bufferr ,sizeof(bufferr) ,0 );
+                cout << bufferr << endl ;
+                send(clientSocket , reinterpret_cast<int*>(&counter) , sizeof(counter) , 0);
+                char bufferrr[1024] = {0};
+                recv(clientSocket , bufferrr , sizeof(bufferrr) , 0 );
+                cout << bufferrr << endl ;
+
+                if(counter2 == counter)
                 {
-                    send(clientSocket, "Welcome", strlen("Welcome"), 0) ;
+                    send(clientSocket, "Welcome ! ", strlen("Welcome ! "), 0) ;
+                    char Choice ;
+                    recv(clientSocket ,&Choice ,sizeof(Choice) ,0);
+                    cout << "Your choice is "<< Choice << endl ;
 
                 }
                 else
